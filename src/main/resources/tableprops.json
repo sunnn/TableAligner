@@ -1,0 +1,21 @@
+{
+  "paths":[{
+    "Srctbl": "hdfs://localhost:8020/user/hive/warehouse/sample.db/source",
+    "Tgtbl": "hdfs://localhost:8020/user/hive/warehouse/sample.db/target"
+  }],
+  "transforms": [
+    {"column": "count_name",
+      "transform" : "country_name",
+      "default": ""
+    },
+    {"column": "popul",
+      "transform" : "population",
+      "default": ""
+    },
+    {
+      "column": "capital",
+      "transform": "capital",
+      "default": "CHEN"
+    }
+  ]
+}
