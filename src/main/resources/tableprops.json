@@ -14,7 +14,7 @@
     },
     {"column": "id",
       "transform" : "sno",
-      "default": ""
+      "default": "rename"
     }
 
   ]
