@@ -7,29 +7,29 @@ import org.json.simple.{JSONArray, JSONObject}
 import scala.collection.mutable.ArrayBuffer
 
 
-class SchemaConf
+class TableConf
 {
   var paths : Seq[(String,String)] =null
   var transforms : Seq[(String,String,String)] = null
 }
 
-object AlignerUtil  {
+object FileUtil  {
 
-  def getconfig(conf: String): SchemaConf = {
+  def getconfig(conf: String): TableConf = {
     val jsonParser = new JSONParser()
     val configJsonstr = scala.io.Source.fromFile(conf).getLines.mkString
     val taskconfig: JSONObject = jsonParser.parse(configJsonstr).asInstanceOf[JSONObject]
     println(taskconfig.getClass)
-    val schemaAl = new SchemaConf()
+    val tblConf = new TableConf()
     val transforms: JSONArray = taskconfig.get("transforms").asInstanceOf[JSONArray]
-    schemaAl.transforms = (0 until transforms.size()).map(transforms.get(_).asInstanceOf[JSONObject])
+    tblConf.transforms = (0 until transforms.size()).map(transforms.get(_).asInstanceOf[JSONObject])
       .map(t => (t.get("column").asInstanceOf[String], t.get("transform").asInstanceOf[String],
         t.get("default").asInstanceOf[String]))
     val paths: JSONArray = taskconfig.get("paths").asInstanceOf[JSONArray]
-    schemaAl.paths = (0 until paths.size()).map(paths.get(_).asInstanceOf[JSONObject])
+    tblConf.paths = (0 until paths.size()).map(paths.get(_).asInstanceOf[JSONObject])
       .map(t => (t.get("Srctbl").asInstanceOf[String], t.get("Tgtbl").asInstanceOf[String]))
     println(paths)
-    schemaAl
+    tblConf
   }
   def addCols(df: DataFrame, columns: Set[(String,String)]): DataFrame = {
     columns.foldLeft(df)((acc, col) => {

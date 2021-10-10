@@ -3,7 +3,7 @@
     "Srctbl": "hdfs://localhost:8020/user/narman/source",
     "Tgtbl": "hdfs://localhost:8020/user/narman/target"
   }],
-  "transforms": [
+  "modification": [
     {"column": "population",
       "transform" : "population",
       "default": "2377"
