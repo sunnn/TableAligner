@@ -59,13 +59,12 @@ def SetIntersect(Sset: Set[(String)],jMap:Map[String, (String, String)])={
     var klist  = ArrayBuffer[String]()
     var vlist = ArrayBuffer[String]()
 
-    val config = constructMap(coltrans)
     ColSrc.foreach {
       case (null,x)  =>  klist.append(x)
       case (x,null)  =>  vlist.append(x)
     }
-    val SrcSet = SetIntersect(klist.toSet,config)
-    val TgtSet = SetIntersect(vlist.toSet,config)
+    val SrcSet = SetIntersect(klist.toSet,constructMap(coltrans))
+    val TgtSet = SetIntersect(vlist.toSet,constructMap(coltrans))
 
     return (SrcSet,TgtSet)
   }
