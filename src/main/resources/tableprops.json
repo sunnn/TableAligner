@@ -1,21 +1,21 @@
 {
   "paths":[{
-    "Srctbl": "hdfs://localhost:8020/user/hive/warehouse/sample.db/source",
-    "Tgtbl": "hdfs://localhost:8020/user/hive/warehouse/sample.db/target"
+    "Srctbl": "hdfs://localhost:8020/user/narman/source",
+    "Tgtbl": "hdfs://localhost:8020/user/narman/target"
   }],
   "transforms": [
-    {"column": "count_name",
-      "transform" : "country_name",
-      "default": ""
-    },
-    {"column": "popul",
+    {"column": "population",
       "transform" : "population",
-      "default": ""
+      "default": "2377"
     },
-    {
-      "column": "capital",
-      "transform": "capital",
-      "default": "CHEN"
+    {"column": "country",
+      "transform" : "country",
+      "default": "UK"
+    },
+    {"column": "id",
+      "transform" : "sno",
+      "default": ""
     }
+
   ]
 }

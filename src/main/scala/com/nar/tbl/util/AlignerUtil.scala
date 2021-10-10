@@ -4,6 +4,8 @@ import org.apache.spark.sql.{DataFrame, SparkSession, functions}
 import org.json.simple.parser.JSONParser
 import org.json.simple.{JSONArray, JSONObject}
 
+import scala.collection.mutable.ArrayBuffer
+
 
 class SchemaConf
 {
@@ -29,30 +31,45 @@ object AlignerUtil  {
     println(paths)
     schemaAl
   }
-  def addCols(df: DataFrame, columns: Seq[String]): DataFrame = {
+  def addCols(df: DataFrame, columns: Set[(String,String)]): DataFrame = {
     columns.foldLeft(df)((acc, col) => {
-      acc.withColumn(col, functions.lit(col)) })
+      acc.withColumn(col._1, functions.lit(col._2)) })
   }
-  def ReplaceCols(df: DataFrame, columns: Seq[String]): DataFrame = {
+  def ReplaceCols(df: DataFrame, columns: Set[(String,String)]): DataFrame = {
     columns.foldLeft(df)((acc, col) => {
-      acc.withColumnRenamed(col, col) })
+      acc.withColumnRenamed(col._1, col._2) })
   }
-  /*def whenkeyisnull(col_fil:Map[String,String]):Map[String,String]= {
-    val withNulls = col_fil.filter{case (k,v)=> k == null}
-    println(s"This is key null $withNulls")
-    withNulls
+
+def SetIntersect(Sset: Set[(String)],jMap:Map[String, (String, String)])={
+  val deltaSet = (Sset.toSet intersect jMap.keySet) collect(jMap)
+  deltaSet
+}
+
+  def constructMap(coltrans:Seq[(String, String, String)])={
+    val config = coltrans.view.map{case (k,v1,v2) if v2 != "" => (k,(v1,v2))
+    case (k,v1,"")  => (k,(k,v1))
+    }.toMap
+    config
   }
-  def whenvalisnull(col_fil:Map[String,String]):Map[String,String]= {
-    val withNulls = col_fil.filter{case (k,v)=> v == null}
-    println(s"This is value null $withNulls")
-    withNulls
+
+
+  def matchcols(ColSrc: List[(String, String)],coltrans:Seq[(String, String, String)])
+  :(Set[(String,String)],Set[(String,String)])
+  = {
+    var klist  = ArrayBuffer[String]()
+    var vlist = ArrayBuffer[String]()
+
+    val config = constructMap(coltrans)
+    ColSrc.foreach {
+      case (null,x)  =>  klist.append(x)
+      case (x,null)  =>  vlist.append(x)
+    }
+    val SrcSet = SetIntersect(klist.toSet,config)
+    val TgtSet = SetIntersect(vlist.toSet,config)
+
+    return (SrcSet,TgtSet)
   }
-  def matchcolumns(col_fil :Set[String],conft:Map[String,String]):Set[String]= {
-    val confval = conft.keySet
-    val aligner_set = col_fil.intersect(confval)
-    val collection_columns = aligner_set collect conft
-    collection_columns
-  }*/
+
 
   def apply_config(spark:SparkSession,cfgstr:String): Unit= {
     val config = getconfig (cfgstr)
@@ -64,25 +81,21 @@ object AlignerUtil  {
     val TgtCols = TargetDf.columns.toList.toDF("tgt_col")
 
     val SrcTgtDf = SrcCols.join(TgtCols,SrcCols("src_col")===TgtCols("tgt_col"),"outer")
-    val SrcTgtNull = SrcTgtDf.filter(SrcTgtDf("src_col").isNull || SrcTgtDf("tgt_col").isNull)
+      .filter(SrcCols("src_col").isNull || TgtCols("tgt_col").isNull)
+      .select($"src_col", $"tgt_col").as[(String, String)].collect.toList
 
-    val ColSrc = SrcTgtNull.select($"src_col", $"tgt_col").as[(String, String)].collect.toMap
-    println(s"This is the logic for Aligner ${ColSrc},${coltranforms}")
+    println(s"This is the logic for Aligner ${SrcTgtDf},${coltranforms}")
 
-    /*val keyNull = whenkeyisnull(col_src)
-    val valueNull = whenvalisnull(col_src)
-    println(keyNull,valueNull)
-    val keyNull_set = matchcolumns(keyNull.values.toSet,confColumnReplace)
-    val valNull_set = matchcolumns(valueNull.keySet,confColumnReplace)
-    println(keyNull_set, valNull_set)
-    val srcdf_c = ReplaceCols(srcfile_df,valNull_set.toSeq)
-    val finaldf_c = addCols(srcdf_c,keyNull_set.toSeq)
-    finaldf_c.show(false)
-    /*
-    val aligner_set = col_src.keySet.intersect(confColumnReplace.keySet)
-    val collection_columns = aligner_set collect confColumnReplace
-    println(aligner_set,collection_columns)
-    srcdf_c.show(false)*/*/
+
+    val (klist,vlist) = matchcols(SrcTgtDf,coltranforms)
+
+    val RenameDf = ReplaceCols(SourceDf,vlist)
+
+    RenameDf.show(false)
+    val finaldf = addCols(RenameDf,klist)
+
+    finaldf.show(false)
+
   }
 
 
