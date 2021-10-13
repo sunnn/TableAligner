@@ -21,7 +21,7 @@ object FileUtil  {
     val taskconfig: JSONObject = jsonParser.parse(configJsonstr).asInstanceOf[JSONObject]
     println(taskconfig.getClass)
     val tblConf = new TableConf()
-    val transforms: JSONArray = taskconfig.get("transforms").asInstanceOf[JSONArray]
+    val transforms: JSONArray = taskconfig.get("modification").asInstanceOf[JSONArray]
     tblConf.transforms = (0 until transforms.size()).map(transforms.get(_).asInstanceOf[JSONObject])
       .map(t => (t.get("column").asInstanceOf[String], t.get("transform").asInstanceOf[String],
         t.get("default").asInstanceOf[String]))
@@ -47,7 +47,7 @@ def SetIntersect(Sset: Set[(String)],jMap:Map[String, (String, String)])={
 
   def constructMap(coltrans:Seq[(String, String, String)])={
     val config = coltrans.view.map{case (k,v1,v2) if v2 != "" => (k,(v1,v2))
-    case (k,v1,"")  => (k,(k,v1))
+    case (k,v1,"rename")  => (k,(k,v1))
     }.toMap
     config
   }

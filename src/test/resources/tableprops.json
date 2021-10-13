@@ -1,7 +1,7 @@
 {
   "paths":[{
-    "Srctbl": "hdfs://localhost:8020/user/narman/source",
-    "Tgtbl": "hdfs://localhost:8020/user/narman/target"
+    "Srctbl": "/user/narman/source",
+    "Tgtbl": "/user/narman/target"
   }],
   "modification": [
     {"column": "population",
