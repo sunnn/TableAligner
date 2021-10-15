@@ -32,8 +32,8 @@ class UtilTest extends FunSuite with BeforeAndAfterAll{
         (3, "San", "Simon", 1974,67,"USA")
       )).toDF(columns1: _*)
 
-      df1.write.format("parquet").mode("overwrite").save("/user/narman/source")
-      df2.write.format("parquet").mode("overwrite").save("/user/narman/target")
+      df1.write.format("parquet").mode("overwrite").save("hdfs://localhost:9000/user/narman/source")
+      df2.write.format("parquet").mode("overwrite").save("hdfs://localhost:9000/user/narman/target")
     }
 
     createtestobj()
@@ -42,12 +42,6 @@ class UtilTest extends FunSuite with BeforeAndAfterAll{
   test("sample "){
     FileUtil.apply_config(spark,"src/test/resources/tableprops.json")
   }
-
-
-
-
-
-
 
   override def afterAll(): Unit = {
     spark.stop()
