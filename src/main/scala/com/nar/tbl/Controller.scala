@@ -1,6 +1,6 @@
 package com.nar.tbl
 
-import com.nar.tbl.util.FileUtil
+import com.nar.tbl.util.TableUtil
 import org.apache.spark.sql.SparkSession
 
 object Controller extends App {
@@ -10,5 +10,5 @@ object Controller extends App {
     .appName("Spark Hive Test")
     .enableHiveSupport()
     .getOrCreate()
-  FileUtil.apply_config(spark,"/home/bitnami/json/tableprops.json")
+  TableUtil.apply_config(spark,"/home/mapr/tableprops.json")
 }

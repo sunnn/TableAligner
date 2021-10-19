@@ -1,21 +1,16 @@
 {
   "paths":[{
-    "Srctbl": "/user/narman/source",
-    "Tgtbl": "/user/narman/target"
+    "Srctbl": "/user/hive/warehouse/sample.db/source",
+    "Tgtbl": "/user/hive/warehouse/sample.db/target"
   }],
   "modification": [
-    {"column": "population",
+    {"column": "popul",
       "transform" : "population",
-      "default": "2377"
+      "default": ""
     },
-    {"column": "country",
-      "transform" : "country",
-      "default": "UK"
-    },
-    {"column": "id",
-      "transform" : "sno",
-      "default": "rename"
+    {"column": "capital",
+      "transform" : "capital",
+      "default": "HYD"
     }
-
   ]
 }

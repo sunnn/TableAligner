@@ -1,4 +1,4 @@
-import com.nar.tbl.util.FileUtil
+import com.nar.tbl.util.TableUtil
 import org.apache.spark.sql
 import org.apache.spark.sql.SparkSession
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
@@ -40,7 +40,7 @@ class UtilTest extends FunSuite with BeforeAndAfterAll{
   }
 
   test("sample "){
-    FileUtil.apply_config(spark,"src/test/resources/tableprops.json")
+    TableUtil.apply_config(spark,"src/test/resources/tableprops.json")
   }
 
 
